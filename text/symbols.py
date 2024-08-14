@@ -8,7 +8,6 @@ through Unidecode. For other data, you can modify _characters. See TRAINING_DATA
 from static.alphabet import character,vowels,consonants,punctuation,_vowels,_pulmonic_consonants
 
 def make_symbols(characters, phonemes, punctuations='!\'(),-.:;? ', pad='_', eos='~', bos='^'):
-    ''' Function to create symbols and phonemes '''
     _phonemes_sorted = sorted(list(phonemes))
 
     # Prepend "@" to ARPAbet symbols to ensure uniqueness (some are the same as uppercase letters):
