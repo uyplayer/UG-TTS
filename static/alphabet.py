@@ -25,8 +25,6 @@ punctuation = [
 
 # 元音
 _vowels = 'aəeıiöüu'
-# 辅音
-_pulmonic_consonants = 'bptdkgqxmʁʃʒfvszmnŋlrwjhʔ'
 
 vowel_mapping = {
     'a': 'ا',
@@ -40,6 +38,8 @@ vowel_mapping = {
 }
 
 # 维吾尔语辅音与 _pulmonic_consonants 的映射
+_pulmonic_consonants = 'bptdkgqxmʁʃʒfvszmnŋlrwjhʔ'
+
 consonant_mapping = {
     'b': 'ب',
     'p': 'پ',
@@ -53,15 +53,16 @@ consonant_mapping = {
     'n': 'ن',
     'ʁ': 'غ',
     'ʃ': 'ش',
-    'ʒ': 'ژ',
+    'ʒ': 'ج',  # 发音类似于英语中的“j”
     'f': 'ف',
     'v': 'ۋ',
     's': 'س',
     'z': 'ز',
     'l': 'ل',
     'r': 'ر',
-    'w': 'و',
+    'w': 'ۋ',  # 维吾尔语中的“w”通常用“ۋ”表示
     'j': 'ي',
     'h': 'ھ',
-    'ʔ': 'ئ'
+    'ʔ': 'ئ',
+    'tʃ': 'چ'   # 添加 'tʃ' 映射到 'چ'
 }

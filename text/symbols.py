@@ -28,7 +28,13 @@ _punctuations = "".join(punctuation)
 # Define Uyghur phonemes
 _vowels = "".join(_vowels)
 _pulmonic_consonants = "".join(_pulmonic_consonants)
-_phonemes = _vowels + _pulmonic_consonants
+# 超段特征符号 (维吾尔语通常不需要)
+suprasegmentals = ''
+# 其他符号 (维吾尔语通常不需要)
+other_symbols = ''
+# 变音符号 (维吾尔语通常不需要)
+diacritics = ''
+_phonemes = _vowels + _pulmonic_consonants + suprasegmentals + other_symbols + diacritics
 
 symbols, phonemes = make_symbols(_characters, _phonemes, _punctuations, _pad, _eos, _bos)
 
