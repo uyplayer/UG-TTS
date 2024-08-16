@@ -1,5 +1,7 @@
 import warnings
 import torch
+from common.log_utils import get_logger
+logger = get_logger("ug_tts")
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -8,6 +10,7 @@ class PreTrainedEncodeDecode(object):
     _instance = None
 
     def __new__(cls):
+        logger.info(f"PreTrainedEncodeDecode is initialized")
         if cls._instance is None:
             cls._instance = super(PreTrainedEncodeDecode, cls).__new__(cls)
             cls._instance._initialize()
@@ -16,6 +19,8 @@ class PreTrainedEncodeDecode(object):
     def _initialize(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = torch.hub.load('pytorch/fairseq:main', 'xlmr.large', weights_only=True)
+        logger.info(f"Device type is {self.device.type}")
+        logger.info(f"xlmr.large model is loaded")
         self.model.to(self.device)
 
     def encoding(self, text):
