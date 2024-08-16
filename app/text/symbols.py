@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from config.alphabet import character,punctuation,_vowels,_pulmonic_consonants
+from config.alphabet import character, punctuation, international_vowels, international_pulmonic_consonants
+
 
 def pop_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
     _phonemes_sorted = sorted(list(phonemes))
-
 
     _arpabet = ['@' + s for s in _phonemes_sorted]
 
@@ -13,6 +13,7 @@ def pop_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
 
     return _symbols, _phonemes
 
+
 _pad = '_'
 _eos = '~'
 _bos = '^'
@@ -20,8 +21,8 @@ _characters = "".join(character)
 _punctuations = "".join(punctuation)
 
 # Define Uyghur phonemes
-_vowels = "".join(_vowels)
-_pulmonic_consonants = "".join(_pulmonic_consonants)
+_vowels = "".join(international_vowels)
+_pulmonic_consonants = "".join(international_pulmonic_consonants)
 # 超段特征符号 (维吾尔语通常不需要)
 suprasegmentals = ''
 # 其他符号 (维吾尔语通常不需要)

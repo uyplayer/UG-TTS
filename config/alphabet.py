@@ -1,8 +1,7 @@
-
 # https://zh.wikipedia.org/zh-cn/%E7%BB%B4%E5%90%BE%E5%B0%94%E8%80%81%E6%96%87%E5%AD%97
 
 # 字母
-character  =  [
+character = [
     "ا", "ە", "ب", "پ", "ت", "ج", "چ", "خ", "د", "ر", "ز", "ژ", "س", "ش", "غ", "ف", "ق", "ك", "گ", "ڭ",
     "ل", "م", "ن", "ھ", "و", "ۆ", "ۈ", "ۇ", "ۋ", "ې", "ى", "ئ", "ي",
 ]
@@ -14,12 +13,11 @@ character_all = [
     'ئې', 'ې', 'ئى', 'ى', 'ي'
 ]
 
-
-character_count  = len(character)
-character_count_all  = len(character_all)
+character_count = len(character)
+character_count_all = len(character_all)
 
 # 元音列表
-vowels  = [
+vowels = [
     "ا", "ە", "و", "ۆ", "ۈ", "ۇ", "ې", "ى", "ئ"
 ]
 
@@ -42,11 +40,11 @@ punctuation = [
 ]
 
 # 元音
-_vowels = 'ɑaɛæoɔuʊøyʏeiɨ'
-_pulmonic_consonants = 'bptdʒtʃχxdrɾzʒsʃʁɣfɸqkgŋlmnhɦwvj'
+international_vowels = 'ɑaɛæoɔuʊøyʏeiɨ'
+international_pulmonic_consonants = 'bptdʒtʃχxdrɾzʒsʃʁɣfɸqkgŋlmnhɦwvj'
 
 # 维吾尔语字母与国际音标映射关系
-_to_ipa = {
+international_to_ipa = {
     'ئا': 'ɑ', 'ا': 'a',
     'ئە': 'ɛ', 'ە': 'æ',
     'ب': 'b',
@@ -54,7 +52,7 @@ _to_ipa = {
     'ت': 't',
     'ج': 'dʒ',
     'چ': 'tʃ',
-     'خ': 'x',
+    'خ': 'x',
     'د': 'd',
     'ر': 'r',
     'ز': 'z',
@@ -80,7 +78,6 @@ _to_ipa = {
     'ئى': 'i', 'ى': 'ɨ',
     'ي': 'j'
 }
-
 
 if __name__ == "__main__":
     pass
