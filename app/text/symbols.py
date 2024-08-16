@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from static.alphabet import character,punctuation,_vowels,_pulmonic_consonants
+from config.alphabet import character,punctuation,_vowels,_pulmonic_consonants
 
-def making_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
+def pop_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
     _phonemes_sorted = sorted(list(phonemes))
 
 
@@ -30,7 +30,7 @@ other_symbols = ''
 diacritics = ''
 _phonemes = _vowels + _pulmonic_consonants + suprasegmentals + other_symbols + diacritics
 
-symbols, phonemes = make_symbols(_characters, _phonemes, _punctuations, _pad, _eos, _bos)
+symbols, phonemes = pop_symbols(_characters, _phonemes, _punctuations, _pad, _eos, _bos)
 
 if __name__ == '__main__':
     print("  TTS symbols {}".format(len(symbols)))
