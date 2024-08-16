@@ -22,3 +22,5 @@ rad.json
 TestResults.xml
 
 .idea
+*.log
+logs
