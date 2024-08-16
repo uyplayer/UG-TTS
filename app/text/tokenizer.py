@@ -1,3 +1,4 @@
+import torch
 from transformers import AutoTokenizer
 import warnings
 
@@ -31,11 +32,25 @@ class PreTrainedTokenizer(object):
     def decoding(self, encoded):
         return self.model.decode(encoded)
 
+    def encoding_character_based(self, text):
+        text = text.to(self.device) if isinstance(text, torch.Tensor) else text
+        char_encoded = [self.model.encode(char) for char in text]
+        char_encoded = [torch.tensor(enc) if not isinstance(enc, torch.Tensor) else enc for enc in char_encoded]
+        return torch.cat(char_encoded, dim=0)
+
+    def decoding_character_based(self, encoded):
+        encoded = encoded.to('cpu') if isinstance(encoded, torch.Tensor) else encoded
+        decoded_chars = [self.model.decode(encoded[i:i + 1]) for i in range(encoded.size(0))]
+        return decoded_chars
+
 
 if __name__ == "__main__":
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
     t = PreTrainedTokenizer()
     res = t.tokenize(text)
     print(res)
-    print(t.encoding(text))
-    print(t.decoding(t.encoding(text)))
+    r1 = t.encoding_character_based(text)
+    print(r1)
+    r2 = t.decoding_character_based(t.encoding_character_based(text))
+    print(r2)
+    print(len(r1),len(r2))
