@@ -53,4 +53,4 @@ if __name__ == "__main__":
     print(r1)
     r2 = t.decoding_character_based(t.encoding_character_based(text))
     print(r2)
-    print(len(r1),len(r2))
+    print(len(r1), len(r2))

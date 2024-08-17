@@ -21,7 +21,7 @@ class PreTrainedEncodeDecode(object):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = torch.hub.load('pytorch/fairseq:main', 'xlmr.large', weights_only=True)
         logger.info(f"Device type is {self.device.type}")
-        logger.info(f"xlmr.large model is loaded")
+        logger.info(f"Xlmr large model is loaded")
         self.model.to(self.device)
 
     def encoding(self, text):
