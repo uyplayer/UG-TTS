@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from config.alphabet import character, punctuation, international_vowels, international_pulmonic_consonants
+from config.alphabet import character_all, punctuation, vowels_all, consonants_all
 
 
-def pop_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
+def do_symbols(characters, phonemes, punctuations='!\'(),-.:;؟؟؟', pad='_', eos='~', bos='^'):
+    ''' Function to create symbols and phonemes '''
     _phonemes_sorted = sorted(list(phonemes))
 
+    # Prepend "@" to phonemes to ensure uniqueness:
     _arpabet = ['@' + s for s in _phonemes_sorted]
 
+    # Export all symbols:
     _symbols = [pad, eos, bos] + list(characters) + _arpabet
     _phonemes = [pad, eos, bos] + list(_phonemes_sorted) + list(punctuations)
 
@@ -17,24 +20,20 @@ def pop_symbols(characters, phonemes, punctuations, pad='_', eos='~', bos='^'):
 _pad = '_'
 _eos = '~'
 _bos = '^'
-_characters = "".join(character)
-_punctuations = "".join(punctuation)
+_characters = character_all
 
-# Define Uyghur phonemes
-_vowels = "".join(international_vowels)
-_pulmonic_consonants = "".join(international_pulmonic_consonants)
-# 超段特征符号 (维吾尔语通常不需要)
-suprasegmentals = ''
-# 其他符号 (维吾尔语通常不需要)
-other_symbols = ''
-# 变音符号 (维吾尔语通常不需要)
-diacritics = ''
-_phonemes = _vowels + _pulmonic_consonants + suprasegmentals + other_symbols + diacritics
 
-symbols, phonemes = pop_symbols(_characters, _phonemes, _punctuations, _pad, _eos, _bos)
+_punctuations = punctuation
+
+
+_vowels = vowels_all
+_consonants = consonants_all
+_phonemes = _vowels + _consonants
+
+symbols, phonemes = do_symbols(_characters, _phonemes, _punctuations, _pad, _eos, _bos)
 
 if __name__ == '__main__':
-    print("  TTS symbols {}".format(len(symbols)))
+    print(" > TTS symbols {}".format(len(symbols)))
     print(symbols)
-    print("  TTS phonemes {}".format(len(phonemes)))
+    print(" > TTS phonemes {}".format(len(phonemes)))
     print(phonemes)
