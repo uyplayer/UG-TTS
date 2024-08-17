@@ -1,5 +1,5 @@
 from common.log_utils import get_logger
-from config.alphabet import international_to_ipa_all, character, vowels, consonants
+from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa
 
 logger = get_logger("ug_tts")
 
@@ -26,7 +26,7 @@ class Phoneme(object):
 
     def _find_phoneme(self, char):
         # todo 实现查找char对应音素的逻辑
-        return "None"
+        return international_to_ipa[char]
 
     def phoneme(self, text):
         character_list = list(text)
@@ -65,7 +65,7 @@ class Phoneme(object):
 
     def sequence_to_phoneme(self, sequence):
         ph = ""
-        phonemes = ''.join([self.id_to_phoneme[i] for i in sequence])
+        phonemes = ' '.join([self.id_to_phoneme[i] for i in sequence])
         return phonemes
 
 
@@ -75,9 +75,9 @@ if __name__ == '__main__':
     print(set(list(text)))
     phonemes = phoneme_processor.phoneme(text)
     print(phonemes)
-    # sequence = phoneme_processor.phoneme_to_sequence(phonemes)
-    # reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
-    # logger.info(f"Original text: {text}")
-    # logger.info(f"Phonemes: {phonemes}")
-    # logger.info(f"Sequence: {sequence}")
-    # logger.info(f"Reconstructed phonemes: {reconstructed_phonemes}")
+    sequence = phoneme_processor.phoneme_to_sequence(phonemes)
+    reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
+    logger.info(f"Original text: {text}")
+    logger.info(f"Phonemes: {phonemes}")
+    logger.info(f"Sequence: {sequence}")
+    logger.info(f"Reconstructed phonemes: {reconstructed_phonemes}")
