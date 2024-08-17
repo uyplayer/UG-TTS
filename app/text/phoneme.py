@@ -23,10 +23,15 @@ class Phoneme(object):
         for i, phoneme in enumerate(international_to_ipa_all.values()):
             self.phoneme_to_id[phoneme] = i
             self.id_to_phoneme[i] = phoneme
+        logger.debug(f"Phoneme to ID map: {self.phoneme_to_id}")
+        logger.debug(f"ID to phoneme map: {self.id_to_phoneme}")
 
     def _find_phoneme(self, char):
-        # todo 实现查找char对应音素的逻辑
-        return international_to_ipa[char]
+        phoneme = international_to_ipa.get(char)
+        if phoneme is None:
+            logger.warning(f"Phoneme not found for character: {char}")
+            phoneme = char  # fallback to the character itself if not found
+        return phoneme
 
     def phoneme(self, text):
         character_list = list(text)
@@ -36,12 +41,15 @@ class Phoneme(object):
             char = character_list[index]
             phoneme = None
             if char in vowels:
-                # 处理元音“ئ”的特殊情况
                 if char == "ئ":
                     if index + 1 < len(character_list):
                         head = char + character_list[index + 1]
                         phoneme = self._find_phoneme(head)
-                        index += 2
+                        if phoneme != head:  # head is not a phoneme itself
+                            index += 2
+                        else:
+                            phoneme = self._find_phoneme(char)
+                            index += 1
                     else:
                         phoneme = self._find_phoneme(char)
                         index += 1
@@ -49,23 +57,27 @@ class Phoneme(object):
                     phoneme = self._find_phoneme(char)
                     index += 1
             elif char in consonants:
-                # 辅音处理
                 phoneme = self._find_phoneme(char)
                 index += 1
             else:
                 phoneme = char
                 index += 1
+
             if phoneme is not None:
                 phoneme_res.append(phoneme)
+                logger.debug(f"Processed character: {char}, Phoneme: {phoneme}")
+
+        logger.info(f"Generated phonemes for text: {phoneme_res}")
         return phoneme_res
 
     def phoneme_to_sequence(self, phonemes):
         sequence = [self.phoneme_to_id[p] for p in phonemes if p in self.phoneme_to_id]
+        logger.info(f"Phoneme sequence: {sequence}")
         return sequence
 
     def sequence_to_phoneme(self, sequence):
-        ph = ""
         phonemes = ' '.join([self.id_to_phoneme[i] for i in sequence])
+        logger.info(f"Reconstructed phonemes: {phonemes}")
         return phonemes
 
 
@@ -74,9 +86,9 @@ if __name__ == '__main__':
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
     print(set(list(text)))
     phonemes = phoneme_processor.phoneme(text)
-    print(phonemes)
     sequence = phoneme_processor.phoneme_to_sequence(phonemes)
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
+
     logger.info(f"Original text: {text}")
     logger.info(f"Phonemes: {phonemes}")
     logger.info(f"Sequence: {sequence}")
