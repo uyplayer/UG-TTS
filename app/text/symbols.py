@@ -4,7 +4,6 @@ from config.alphabet import character_all, punctuation, vowels_all, consonants_a
 
 
 def do_symbols(characters, phonemes, punctuations='!\'(),-.:;؟؟؟', pad='_', eos='~', bos='^'):
-    ''' Function to create symbols and phonemes '''
     _phonemes_sorted = sorted(list(phonemes))
 
     # Prepend "@" to phonemes to ensure uniqueness:
