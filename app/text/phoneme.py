@@ -8,6 +8,9 @@ class Phoneme(object):
     _instance = None
 
     def __new__(cls):
+        """
+        确保 Phoneme 类为单例模式。
+        """
         logger.info(f"Phoneme is initialized")
         if cls._instance is None:
             cls._instance = super(Phoneme, cls).__new__(cls)
@@ -15,11 +18,17 @@ class Phoneme(object):
         return cls._instance
 
     def _initialize(self):
+        """
+        初始化 Phoneme 实例，包括构建音素到 ID 的映射。
+        """
         self.phoneme_to_id = {}
         self.id_to_phoneme = {}
         self._build_phoneme_map()
 
     def _build_phoneme_map(self):
+        """
+        构建音素到 ID 的映射以及 ID 到音素的映射。
+        """
         for i, phoneme in enumerate(international_to_ipa_all.values()):
             self.phoneme_to_id[phoneme] = i
             self.id_to_phoneme[i] = phoneme
@@ -27,13 +36,23 @@ class Phoneme(object):
         logger.debug(f"ID to phoneme map: {self.id_to_phoneme}")
 
     def _find_phoneme(self, char):
+        """
+        查找字符对应的音素，如果未找到则返回字符本身。
+        :param char: 字符
+        :return: 对应的音素或字符本身
+        """
         phoneme = international_to_ipa.get(char)
         if phoneme is None:
             logger.warning(f"Phoneme not found for character: {char}")
-            phoneme = char  # fallback to the character itself if not found
+            phoneme = char  # 如果未找到音素，则返回字符本身
         return phoneme
 
     def phoneme(self, text):
+        """
+        将文本转换为音素序列。
+        :param text: 输入文本
+        :return: 音素列表
+        """
         character_list = list(text)
         index = 0
         phoneme_res = []
@@ -45,7 +64,7 @@ class Phoneme(object):
                     if index + 1 < len(character_list):
                         head = char + character_list[index + 1]
                         phoneme = self._find_phoneme(head)
-                        if phoneme != head:  # head is not a phoneme itself
+                        if phoneme != head:  # 如果 head 不是音素本身
                             index += 2
                         else:
                             phoneme = self._find_phoneme(char)
@@ -71,24 +90,44 @@ class Phoneme(object):
         return phoneme_res
 
     def phoneme_to_sequence(self, phonemes):
+        """
+        将音素列表转换为音素 ID 序列。
+        :param phonemes: 音素列表
+        :return: 音素 ID 序列
+        """
         sequence = [self.phoneme_to_id[p] for p in phonemes if p in self.phoneme_to_id]
         logger.info(f"Phoneme sequence: {sequence}")
         return sequence
 
     def sequence_to_phoneme(self, sequence):
+        """
+        将音素 ID 序列转换回音素列表。
+        :param sequence: 音素 ID 序列
+        :return: 重建的音素列表
+        """
         phonemes = ' '.join([self.id_to_phoneme[i] for i in sequence])
         logger.info(f"Reconstructed phonemes: {phonemes}")
         return phonemes
 
 
 if __name__ == '__main__':
+    # 创建 Phoneme 实例并处理文本
     phoneme_processor = Phoneme()
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
+
+    # 打印文本中的所有唯一字符
     print(set(list(text)))
+
+    # 生成音素列表
     phonemes = phoneme_processor.phoneme(text)
+
+    # 将音素列表转换为音素 ID 序列
     sequence = phoneme_processor.phoneme_to_sequence(phonemes)
+
+    # 将音素 ID 序列转换回音素列表
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
 
+    # 记录和打印原始文本、音素列表、音素 ID 序列及重建的音素列表
     logger.info(f"Original text: {text}")
     logger.info(f"Phonemes: {phonemes}")
     logger.info(f"Sequence: {sequence}")

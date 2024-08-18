@@ -15,9 +15,11 @@ class IPA(object):
         return cls._instance
 
     def _initialize(self):
+        # 使用 Epitran 库初始化维吾尔语的 IPA 转写器
         self.ipa = epitran.Epitran('uig-Arab')
 
     def transliterate(self, text):
+        # 将输入文本转换为 IPA 表示
         return self.ipa.transliterate(text)
 
 
