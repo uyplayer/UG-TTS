@@ -1,7 +1,7 @@
 from common.log_utils import get_logger
 from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa
 
-logger = get_logger("ug_tts")
+logger = get_logger(__name__)
 
 
 class Phoneme(object):

@@ -2,7 +2,7 @@ import warnings
 import torch
 from common.log_utils import get_logger
 
-logger = get_logger("ug_tts")
+logger = get_logger(__name__)
 
 # 忽略 UserWarning 警告
 warnings.filterwarnings("ignore", category=UserWarning)

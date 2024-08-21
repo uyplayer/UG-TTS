@@ -5,7 +5,7 @@ import warnings
 from common.log_utils import get_logger
 
 # 设置日志记录器
-logger = get_logger("ug_tts")
+logger = get_logger(__name__)
 # 忽略用户警告
 warnings.filterwarnings("ignore", category=UserWarning)
 

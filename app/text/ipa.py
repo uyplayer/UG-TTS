@@ -1,7 +1,7 @@
 import epitran
 from common.log_utils import get_logger
 
-logger = get_logger("ug_tts")
+logger = get_logger(__name__)
 
 
 class IPA(object):

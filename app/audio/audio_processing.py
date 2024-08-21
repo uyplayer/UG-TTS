@@ -8,7 +8,7 @@ from common.log_utils import get_logger
 from scipy import signal
 from common.path_config import data_dir
 
-logger = get_logger("ug_tts")
+logger = get_logger(__name__)
 
 
 class AudioProcess(object):
