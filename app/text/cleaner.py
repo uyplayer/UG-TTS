@@ -1,66 +1,86 @@
-import warnings
-import torch
+import re
+from config.alphabet import punctuation, character
 from common.log_utils import get_logger
+from config.dictionary import english_dictionary
+from config.special_symbols import money_symbols_mapping, punctuation_mapping
+from app.text.num2str import num2str
 
 logger = get_logger(__name__)
 
-# 忽略 UserWarning 警告
-warnings.filterwarnings("ignore", category=UserWarning)
+
+def _normalize_punctuation(text):
+    for punc, replacement in punctuation_mapping.items():
+        text = text.replace(punc, replacement)
+    return text
 
 
-class PreTrainedEncodeDecode(object):
+class TextCleaner(object):
     _instance = None
 
     def __new__(cls):
-        logger.info(f"PreTrainedEncodeDecode is initialized")
+        logger.info("TextCleaner is initialized")
         if cls._instance is None:
-            cls._instance = super(PreTrainedEncodeDecode, cls).__new__(cls)
+            cls._instance = super(TextCleaner, cls).__new__(cls)
             cls._instance._initialize()
         return cls._instance
 
     def _initialize(self):
-        # 设置设备为 GPU (cuda) 或 CPU
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # 从 PyTorch Hub 加载预训练的 XLM-R 模型
-        self.model = torch.hub.load('pytorch/fairseq:main', 'xlmr.large', weights_only=True)
-        logger.info(f"Device type is {self.device.type}")
-        logger.info(f"Xlmr large model is loaded")
-        self.model.to(self.device)
+        pass
 
-    def encoding(self, text):
-        # 将文本转移到设备上进行编码
-        text = text.to(self.device) if isinstance(text, torch.Tensor) else text
-        return self.model.encode(text)
+    def clean_text(self, text):
+        text = text.upper()
+        text = _normalize_punctuation(text)
+        text = self._normalize_currency(text)
+        text = self._normalize_number(text)
+        text = self._normalize_english_words(text)
+        text = self._remove_extra_spaces(text)
+        text = self._remove_invalid_characters(text)
+        return text
 
-    def decoding(self, encoded):
-        # 将编码的文本转移到 CPU 上进行解码
-        encoded = encoded.to('cpu') if isinstance(encoded, torch.Tensor) else encoded
-        return self.model.decode(encoded)
+    @classmethod
+    def _normalize_currency(cls, text):
+        for symbol, translation in money_symbols_mapping.items():
+            text = text.replace(symbol, translation)
+        return text
 
-    def encode_each_char(self, text):
-        # 对文本中的每个字符进行编码和解码，并输出结果
-        for char in text:
-            encoded_char = self.model.encode(char)
-            decoded_char = self.model.decode(encoded_char)
-            print(f"Character: {char} -> Encoded: {encoded_char.tolist()} -> Decoded: {decoded_char}")
+    @classmethod
+    def _normalize_number(cls, text):
+        text = re.sub(r'\d+', lambda x: num2str(int(x.group())), text)
+        return text
 
-    def encoding_character_based(self, text):
-        # 对文本中的每个字符进行编码，并将结果连接成一个 tensor
-        char_encoded = [self.model.encode(char) for char in text]
-        return torch.cat(char_encoded, dim=0)
+    @classmethod
+    def _normalize_english_words(cls, text):
 
-    def decoding_character_based(self, encoded):
-        # 将编码的文本解码为每个字符的列表
-        decoded_chars = [self.model.decode(encoded[i:i + 1]) for i in range(encoded.size(0))]
-        return decoded_chars
+        def replace_match(match):
+            word = match.group(0)
+            if word in english_dictionary.keys():
+                return english_dictionary.get(word.upper(), word)
+            else:
+                characters = list(word)
+                replaced_characters = [english_dictionary.get(char.upper(), char) for char in characters]
+                return ''.join(replaced_characters)
+
+        text = re.sub(r'\b[A-Za-z]+\b', replace_match, text)
+        return text
+
+    @classmethod
+    def _remove_extra_spaces(cls, text):
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text
+
+    @classmethod
+    def _remove_invalid_characters(cls, text):
+        valid_characters = ''.join(character)
+        valid_punctuation = ''.join(punctuation)
+        valid_symbols = r'\s\d'
+        valid_pattern = f'[^{valid_characters}{valid_punctuation}{valid_symbols}]'
+
+        text = re.sub(valid_pattern, '', text)
+        return text
 
 
-if __name__ == "__main__":
-    text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
-    t = PreTrainedEncodeDecode()
-    # 基于字符的编码
-    char_encoded = t.encoding_character_based(text)
-    print("Character-based encoding:", char_encoded.tolist())
-    # 基于字符的解码
-    decoded_text = t.decoding_character_based(char_encoded)
-    print("Character-based decoded text:", decoded_text)
+if __name__ == '__main__':
+    text = "  ئايدا 1111 ئىككى! قېتىم...$ fff "
+    cleaner = TextCleaner()
+    cleaned_text = cleaner.clean_text(text)
+    print(cleaned_text)
