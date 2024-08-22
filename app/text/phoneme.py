@@ -1,6 +1,6 @@
-from common.log_utils import get_logger
-from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa
 
+from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa
+from common.log_utils import get_logger
 logger = get_logger(__name__)
 
 
