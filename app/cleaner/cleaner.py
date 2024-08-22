@@ -18,14 +18,13 @@ class TextCleaner(object):
     _instance = None
 
     def __new__(cls):
-        logger.info("TextCleaner is initialized")
         if cls._instance is None:
             cls._instance = super(TextCleaner, cls).__new__(cls)
             cls._instance._initialize()
         return cls._instance
 
     def _initialize(self):
-        pass
+        logger.info("TextCleaner initialized")
 
     def clean_text(self, text):
         text = text.upper()
@@ -50,23 +49,19 @@ class TextCleaner(object):
 
     @classmethod
     def _normalize_english_words(cls, text):
-
         def replace_match(match):
             word = match.group(0)
-            if word in english_dictionary.keys():
-                return english_dictionary.get(word.upper(), word)
+            if word.upper() in english_dictionary:
+                return english_dictionary[word.upper()]
             else:
-                characters = list(word)
-                replaced_characters = [english_dictionary.get(char.upper(), char) for char in characters]
-                return ''.join(replaced_characters)
+                return ''.join(english_dictionary.get(char.upper(), char) for char in word)
 
         text = re.sub(r'\b[A-Za-z]+\b', replace_match, text)
         return text
 
     @classmethod
     def _remove_extra_spaces(cls, text):
-        text = re.sub(r'\s+', ' ', text).strip()
-        return text
+        return re.sub(r'\s+', ' ', text).strip()
 
     @classmethod
     def _remove_invalid_characters(cls, text):
@@ -74,9 +69,7 @@ class TextCleaner(object):
         valid_punctuation = ''.join(punctuation)
         valid_symbols = r'\s\d'
         valid_pattern = f'[^{valid_characters}{valid_punctuation}{valid_symbols}]'
-
-        text = re.sub(valid_pattern, '', text)
-        return text
+        return re.sub(valid_pattern, '', text)
 
 
 if __name__ == '__main__':
