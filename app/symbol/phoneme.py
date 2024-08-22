@@ -86,7 +86,7 @@ class Phoneme(object):
                 phoneme_res.append(phoneme)
                 logger.debug(f"Processed character: {char}, Phoneme: {phoneme}")
 
-        logger.info(f"Generated phonemes for text: {phoneme_res}")
+        logger.info(f"Generated phonemes for symbol: {phoneme_res}")
         return phoneme_res
 
     def phoneme_to_sequence(self, phonemes):
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
 
     # 记录和打印原始文本、音素列表、音素 ID 序列及重建的音素列表
-    logger.info(f"Original text: {text}")
+    logger.info(f"Original symbol: {text}")
     logger.info(f"Phonemes: {phonemes}")
     logger.info(f"Sequence: {sequence}")
     logger.info(f"Reconstructed phonemes: {reconstructed_phonemes}")

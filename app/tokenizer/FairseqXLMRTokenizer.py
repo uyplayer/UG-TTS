@@ -19,7 +19,7 @@ class FairseqXLMRTokenizer(BaseTokenizer, ABC):
         self.tokenizer = AutoTokenizer.from_pretrained('xlm-roberta-large')
 
     def tokenize(self, text):
-        # Tokenize the text using the AutoTokenizer
+        # Tokenize the symbol using the AutoTokenizer
         tokens = self.tokenizer.tokenize(text)
         return tokens
 
