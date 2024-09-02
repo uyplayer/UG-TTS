@@ -1,11 +1,7 @@
-import unittest
 from enum import Enum, unique
-import torch
-from transformers import AutoTokenizer
 
 from app.tokenizer.FairseqXLMRTokenizer import FairseqXLMRTokenizer
 from app.tokenizer.XLMRobertaTokenizer import XLMRobertaTokenizer
-from app.tokenizer.base_tokenizer import BaseTokenizer
 from common.log_utils import get_logger
 
 logger = get_logger(__name__)
