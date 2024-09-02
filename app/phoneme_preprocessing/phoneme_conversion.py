@@ -43,8 +43,8 @@ class Phoneme(object):
         """
         phoneme = international_to_ipa.get(char)
         if phoneme is None:
-            logger.warning(f"Phoneme not found for character: {char}")
-            phoneme = char  # 如果未找到音素，则返回字符本身
+            # logger.warning(f"Phoneme not found for character: {char}")
+            phoneme = char
         return phoneme
 
     def phoneme(self, text):
@@ -114,17 +114,9 @@ if __name__ == '__main__':
 
     phoneme_processor = Phoneme()
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
-
-
     print(set(list(text)))
-
-
     phonemes = phoneme_processor.phoneme(text)
-
-
     sequence = phoneme_processor.phoneme_to_sequence(phonemes)
-
-
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
 
     logger.info(f"Original symbol: {text}")

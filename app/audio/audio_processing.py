@@ -83,8 +83,6 @@ class AudioProcess(object):
         audio_trimmed, _ = librosa.effects.trim(audio)
         return audio_trimmed
 
-    import librosa
-
     def extract_mel_spectrogram(self, audio, sr, n_mels=80, n_fft=2048, hop_length=512):
         """
         从音频数据中提取 Mel 频谱。
