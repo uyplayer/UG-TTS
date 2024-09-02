@@ -5,7 +5,8 @@ UG-TTS is an open-source Text-to-Speech system for Uyghur, offering high-quality
 
 # 架构
 
-```json
+```c++
+
 +---------------------------+
 |    Text Input (文本输入)    |
 +---------------------------+
@@ -36,6 +37,7 @@ UG-TTS is an open-source Text-to-Speech system for Uyghur, offering high-quality
 +---------------------------+
 | Audio Output (音频输出)    |
 +---------------------------+
+
 
 ```
 
