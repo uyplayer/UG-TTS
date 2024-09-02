@@ -111,23 +111,22 @@ class Phoneme(object):
 
 
 if __name__ == '__main__':
-    # 创建 Phoneme 实例并处理文本
+
     phoneme_processor = Phoneme()
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
 
-    # 打印文本中的所有唯一字符
+
     print(set(list(text)))
 
-    # 生成音素列表
+
     phonemes = phoneme_processor.phoneme(text)
 
-    # 将音素列表转换为音素 ID 序列
+
     sequence = phoneme_processor.phoneme_to_sequence(phonemes)
 
-    # 将音素 ID 序列转换回音素列表
+
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
 
-    # 记录和打印原始文本、音素列表、音素 ID 序列及重建的音素列表
     logger.info(f"Original symbol: {text}")
     logger.info(f"Phonemes: {phonemes}")
     logger.info(f"Sequence: {sequence}")
