@@ -114,7 +114,6 @@ if __name__ == '__main__':
 
     phoneme_processor = Phoneme()
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
-    print(set(list(text)))
     phonemes = phoneme_processor.phoneme(text)
     sequence = phoneme_processor.phoneme_to_sequence(phonemes)
     reconstructed_phonemes = phoneme_processor.sequence_to_phoneme(sequence)
@@ -123,3 +122,6 @@ if __name__ == '__main__':
     logger.info(f"Phonemes: {phonemes}")
     logger.info(f"Sequence: {sequence}")
     logger.info(f"Reconstructed phonemes: {reconstructed_phonemes}")
+    print(f"phonemes = {len(phonemes)}")
+    print(f"sequence = {len(sequence)}")
+    print(f"reconstructed_phonemes = {len(reconstructed_phonemes)}")
