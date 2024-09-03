@@ -30,13 +30,15 @@ if __name__ == '__main__':
 
 
     text = "ئايدا ئىككى قېتىم دەرسكە كەلمىگەن ئوقۇغۇچىلار دەرستىن چېكىندۈرۈلىدۇ."
+    print(len(list(text)))
     cleaner = TextCleaner()
     cleaned_text = cleaner.clean_text(text)
-
+    print(len(list(cleaned_text)))
     phoneme_processor = Phoneme()
     phonemes = phoneme_processor.phoneme(cleaned_text)
-
+    print(len(phonemes))
     phoneme_sequence = phoneme_processor.phoneme_to_sequence(phonemes)
+    print(len(phoneme_sequence))
     phoneme_sequence = torch.tensor(phoneme_sequence).unsqueeze(0)
     print(list(cleaned_text))
     print(len(list(cleaned_text)))

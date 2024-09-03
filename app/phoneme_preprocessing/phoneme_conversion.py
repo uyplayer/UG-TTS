@@ -1,5 +1,5 @@
 
-from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa
+from config.alphabet import international_to_ipa_all, character, vowels, consonants, international_to_ipa, punctuation
 from common.log_utils import get_logger
 logger = get_logger(__name__)
 
@@ -29,7 +29,8 @@ class Phoneme(object):
         """
         构建音素到 ID 的映射以及 ID 到音素的映射。
         """
-        for i, phoneme in enumerate(international_to_ipa_all.values()):
+        all_chars = list(international_to_ipa_all.values()) + punctuation
+        for i, phoneme in enumerate(all_chars):
             self.phoneme_to_id[phoneme] = i
             self.id_to_phoneme[i] = phoneme
         logger.debug(f"Phoneme to ID map: {self.phoneme_to_id}")
