@@ -85,9 +85,9 @@ class Phoneme(object):
 
             if phoneme is not None:
                 phoneme_res.append(phoneme)
-                logger.debug(f"Processed character: {char}, Phoneme: {phoneme}")
+                # logger.debug(f"Processed character: {char}, Phoneme: {phoneme}")
 
-        logger.info(f"Generated phonemes for symbol: {phoneme_res}")
+        # logger.info(f"Generated phonemes for symbol: {phoneme_res}")
         return phoneme_res
 
     def phoneme_to_sequence(self, phonemes):
@@ -97,7 +97,7 @@ class Phoneme(object):
         :return: 音素 ID 序列
         """
         sequence = [self.phoneme_to_id[p] for p in phonemes if p in self.phoneme_to_id]
-        logger.info(f"Phoneme sequence: {sequence}")
+        # logger.info(f"Phoneme sequence: {sequence}")
         return sequence
 
     def sequence_to_phoneme(self, sequence):
@@ -107,7 +107,7 @@ class Phoneme(object):
         :return: 重建的音素列表
         """
         phonemes = ' '.join([self.id_to_phoneme[i] for i in sequence])
-        logger.info(f"Reconstructed phonemes: {phonemes}")
+        # logger.info(f"Reconstructed phonemes: {phonemes}")
         return phonemes
 
 
