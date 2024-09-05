@@ -22,18 +22,17 @@ class TextEncoder(nn.Module):
     def forward(self, x, lengths):
         # 输入是 [batch_size, sequence_length]
         x = self.embedding(x)
-        # 转换为 [batch_size, embedding_dim, sequence_length] 供 Conv1d 使用
+        # 转换为 [batch_size, embedding_dim, sequence_length]
         x = x.permute(0, 2, 1)
         x = self.conv(x)
         x = self.batch_norm(x)
-        # 转换回 [batch_size, sequence_length, hidden_dim] 供 LSTM 使用
+        # 转换回 [batch_size, sequence_length, hidden_dim]
         x = x.permute(0, 2, 1)
         x = self.dropout(x)
 
         # 打包序列，避免 LSTM 处理填充部分
         packed_input = pack_padded_sequence(x, lengths, batch_first=True, enforce_sorted=False)
         packed_output, _ = self.lstm(packed_input)
-
         # 解包回填充形式
         output, _ = pad_packed_sequence(packed_output, batch_first=True)
         return output
