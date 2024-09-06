@@ -13,7 +13,8 @@ class Tacotron2(nn.Module):
         self.decoder = Decoder(hidden_dim, hidden_dim, output_dim)
 
     def forward(self, x, hidden_state):
-        encoder_output = self.encoder(x)
+        lengths = (x != 0).sum(dim=1).cpu().long()
+        encoder_output = self.encoder(x, lengths)
         context, attention_weights = self.attention(hidden_state, encoder_output, encoder_output)
         mel_output, hidden_state = self.decoder(context, hidden_state)
         return mel_output, attention_weights
