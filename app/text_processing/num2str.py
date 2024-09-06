@@ -1,13 +1,11 @@
 def num2str(number: float, money: bool = False, zero: bool = True) -> str:
     """
-    将数字转换为维吾尔语的字符串表示形式。
-
+    将数字转换为维吾尔语的字符串表示形式
     :param number: 要转换的数字（浮点数）
-    :param money: 如果为 True，则以货币格式显示（例如：一元一角）
+    :param money: 如果为 True，则以货币格式显示（一元一角）
     :param zero: 是否显示零（默认显示）
     :return: 维吾尔语的数字字符串
     """
-    # 定义中文数字词汇和单位
     dot = "."
     separator = " "
     minus = "مىنۇس"
@@ -22,20 +20,17 @@ def num2str(number: float, money: bool = False, zero: bool = True) -> str:
                     "مىلياردتا", "ئون مىلياردتا", "يۈز مىلياردتا", "تىرىللىيوندا", "ئون تىرىللىيوندا",
                     "يۈز تىرىللىيوندا"]
 
-    # 将数字转换为字符串并分割整数部分和小数部分
     source = str(number)
     split = source.split(dot)
 
-    integer = split[0]  # 整数部分
-    decimal = split[1] if len(split) == 2 else ""  # 小数部分
+    integer = split[0]
+    decimal = split[1] if len(split) == 2 else ""
 
     result = ""
-    # 处理负数
     if int(integer) < 0:
         result += minus + separator
         integer = integer[1:].strip()
 
-    # 处理整数部分
     if len(integer) == 1:
         result += one[int(integer)] if integer != "0" or zero or len(decimal) > 0 else ""
     elif len(integer) == 2:
@@ -53,7 +48,6 @@ def num2str(number: float, money: bool = False, zero: bool = True) -> str:
         first = int(integer[:index])
         result += num2str(first) + separator + more[more_index] + separator + num2str(int(integer[index:]), False)
 
-    # 处理小数部分
     if len(decimal) > len(decimal_more):
         raise ValueError("Number is too large")
     elif len(decimal) > 0 and not money:
@@ -72,8 +66,9 @@ def num2str(number: float, money: bool = False, zero: bool = True) -> str:
 
 
 if __name__ == "__main__":
-    print(num2str(123456789))  # 打印: 维吾尔语表示形式的 123456789
-    print(num2str(123.456789))  # 打印: 维吾尔语表示形式的 123.456789
-    print(num2str(1.10, True))  # 打印: 维吾尔语表示形式的 1.10（货币格式）
-    print(num2str(1.01, True))  # 打印: 维吾尔语表示形式的 1.01（货币格式）
-    print(num2str(1.12, True))  # 打印: 维吾尔语表示形式的 1.12（货币格式）
+    print(num2str(123456789))
+    print(num2str(123.456789))
+    print(num2str(1.10, True))
+    print(num2str(1.01, True))
+    print(num2str(1.12, True))
+    print(num2str(1991760943111427))

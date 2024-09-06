@@ -1,4 +1,7 @@
 import re
+
+from sympy.physics.qho_1d import psi_n
+
 from config.alphabet import punctuation, character
 from common.log_utils import get_logger
 from config.dictionary import english_dictionary
@@ -15,16 +18,10 @@ def _normalize_punctuation(text):
 
 
 class TextCleaner(object):
-    _instance = None
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(TextCleaner, cls).__new__(cls)
-            cls._instance._initialize()
-        return cls._instance
 
-    def _initialize(self):
-        logger.info("TextCleaner initialized")
+    def __init__(self):
+        pass
 
     def clean_text(self, text):
         text = text.upper()

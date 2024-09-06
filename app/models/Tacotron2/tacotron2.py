@@ -1,14 +1,9 @@
-
-
-
-
-
-# tacotron2.py
 import torch
 from torch import nn
 from app.models.Tacotron2.text_encoder import TextEncoder
 from app.models.Tacotron2.attention import Attention
 from app.models.Tacotron2.decoder import Decoder
+
 
 class Tacotron2(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim):
@@ -23,3 +18,6 @@ class Tacotron2(nn.Module):
         mel_output, hidden_state = self.decoder(context, hidden_state)
         return mel_output, attention_weights
 
+
+if __name__ == '__main__':
+    pass

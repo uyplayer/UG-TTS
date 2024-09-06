@@ -5,26 +5,12 @@ logger = get_logger(__name__)
 
 
 class Phoneme(object):
-    _instance = None
 
-    def __new__(cls):
-        """
-        确保 Phoneme 类为单例模式。
-        """
-        logger.info(f"Phoneme is initialized")
-        if cls._instance is None:
-            cls._instance = super(Phoneme, cls).__new__(cls)
-            cls._instance._initialize()
-        return cls._instance
 
-    def _initialize(self):
-        """
-        初始化 Phoneme 实例，包括构建音素到 ID 的映射。
-        """
-        self.phoneme_to_id = {}
-        self.id_to_phoneme = {}
-        self._build_phoneme_map()
-
+    def __init__(self):
+       self.phoneme_to_id = {}
+       self.id_to_phoneme = {}
+       self._build_phoneme_map()
     def _build_phoneme_map(self):
         """
         构建音素到 ID 的映射以及 ID 到音素的映射。
