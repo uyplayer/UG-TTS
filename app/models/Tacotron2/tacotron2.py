@@ -12,6 +12,7 @@ class Tacotron2(nn.Module):
         self.attention = Attention(hidden_dim * 2)
         self.decoder = Decoder(hidden_dim, hidden_dim, output_dim)
 
+
     def forward(self, x, device):
         lengths = [len(seq) for seq in x]
         encoder_output = self.encoder(x, lengths).to(device) # (batch_size, seq_len, hidden_dim)
