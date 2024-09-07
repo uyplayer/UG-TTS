@@ -22,8 +22,7 @@ def train(model, dataloader, criterion, optimizer, device,batch_size,hidden_dim,
         for i, (wave_paths, phoneme_sequences) in enumerate(dataloader):
             phoneme_sequences = phoneme_sequences.to(device)
             optimizer.zero_grad()
-            hidden_state = torch.zeros(batch_size, hidden_dim).to(device)
-            mel_output, _ = model(phoneme_sequences, hidden_state)
+            mel_output, _ = model(phoneme_sequences,device)
             mel_targets = get_mel_targets(wave_paths).to(device)
             loss = criterion(mel_output, mel_targets)
             loss.backward()

@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+
 class Attention(nn.Module):
     def __init__(self, hidden_dim):
         super(Attention, self).__init__()
@@ -13,12 +14,14 @@ class Attention(nn.Module):
     def forward(self, query, keys, values):
         if query is None:
             raise ValueError("The hidden state (query) is None, which is required for attention mechanism.")
-        #  query torch.Size([16, 512])  .   values ,keys   torch.Size([16, 310, 1024])
+        #  query torch.Size([16, 512])  .   values ,keys   torch.Size([16, 237, 1024])
         query = query.unsqueeze(1)  # (batch_size, 1, hidden_dim)
         scores = self.Va(torch.tanh(self.Wa(query) + self.Ua(keys)))  # (batch_size, seq_len, 1)
-        attention_weights = F.softmax(scores, dim=1)  # (batch_size, seq_len, 1)
-        context = torch.bmm(attention_weights.transpose(1, 2), values)  # (batch_size, 1, hidden_dim)
+        attention_weights = F.softmax(scores.squeeze(-1), dim=1)  # (batch_size, seq_len)
+        context = torch.bmm(attention_weights.unsqueeze(1), values)  # (batch_size, 1, hidden_dim)
+
         return context, attention_weights
+
 
 if __name__ == '__main__':
     batch_size = 16
