@@ -46,6 +46,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, device, batch_s
             optimizer.zero_grad()
             mel_output = model(phoneme_sequences, device)
             mel_targets = get_mel_targets(wave_paths, audio_processor, target_length=250, n_mels=250).to(device)
+            if torch.isnan(phoneme_sequences).any():
+                print(" phoneme_sequences is none ")
+            if torch.isnan(mel_output).any():
+                print(" mel_output is none ")
+            if torch.isnan(mel_targets).any():
+                print(" mel_targets is none ")
             loss = criterion(mel_output, mel_targets)
             if torch.isnan(loss) or torch.isinf(loss):
                 print("Found NaN or Inf in loss, stopping training.")
