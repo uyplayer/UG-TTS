@@ -47,7 +47,14 @@ def train(model, train_loader, val_loader, criterion, optimizer, device, batch_s
             mel_output = model(phoneme_sequences, device)
             mel_targets = get_mel_targets(wave_paths, audio_processor, target_length=250, n_mels=250).to(device)
             loss = criterion(mel_output, mel_targets)
+            if torch.isnan(loss) or torch.isinf(loss):
+                print("Found NaN or Inf in loss, stopping training.")
+                return  # Stop training if nan or inf is found
             loss.backward()
+
+            # Gradient clipping
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
             optimizer.step()
             running_loss += loss.item()
 
@@ -100,7 +107,8 @@ if __name__ == '__main__':
 
     # Loss function and optimizer
     criterion = nn.L1Loss()
-    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+
 
     # Train the model
     train(model, train_loader, val_loader, criterion, optimizer, device, batch_size, hidden_dim, num_epochs=50)
