@@ -11,9 +11,9 @@ from app.phoneme_preprocessing.phoneme_conversion import Phoneme
 from common.path_config import model_saving_dir
 import librosa
 
-def train(model, dataloader, criterion, optimizer, device,batch_size,hidden_dim, num_epochs=10):
-    name = str(model._get_name())
-    model_saving_path = os.path.join(model_saving_dir,name)
+def train(model, dataloader, criterion, optimizer, device, batch_size, hidden_dim, num_epochs=10):
+    name = str(model.__class__.__name__)
+    model_saving_path = os.path.join(model_saving_dir, name)
     if not os.path.exists(model_saving_path):
         os.makedirs(model_saving_path)
     model.train()
@@ -22,7 +22,7 @@ def train(model, dataloader, criterion, optimizer, device,batch_size,hidden_dim,
         for i, (wave_paths, phoneme_sequences) in enumerate(dataloader):
             phoneme_sequences = phoneme_sequences.to(device)
             optimizer.zero_grad()
-            mel_output, _ = model(phoneme_sequences,device)
+            mel_output, new_hidden_state, new_cell_state, attention_weights = model(phoneme_sequences, device)
             mel_targets = get_mel_targets(wave_paths).to(device)
             loss = criterion(mel_output, mel_targets)
             loss.backward()
@@ -32,6 +32,7 @@ def train(model, dataloader, criterion, optimizer, device,batch_size,hidden_dim,
                 print(f'Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(dataloader)}], Loss: {running_loss / 10:.4f}')
                 running_loss = 0.0
         torch.save(model.state_dict(), f'{model_saving_path}/tacotron2_epoch_{epoch + 1}.pth')
+
 
 
 def get_mel_targets(wave_paths):

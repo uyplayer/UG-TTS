@@ -43,13 +43,14 @@ def num2str(number: float, money: bool = False, zero: bool = True) -> str:
 
         more_index = (len(integer) - 1) // 3
         if more_index > len(more) - 1:
-            raise ValueError("Number is too large")
-
+            # raise ValueError("Number is too large")
+            return " "
         first = int(integer[:index])
         result += num2str(first) + separator + more[more_index] + separator + num2str(int(integer[index:]), False)
 
     if len(decimal) > len(decimal_more):
-        raise ValueError("Number is too large")
+        # raise ValueError("Number is too large")
+        return " "
     elif len(decimal) > 0 and not money:
         result += separator + dot_str + separator + decimal_more[len(decimal) - 1] + separator + num2str(int(decimal),
                                                                                                          False)

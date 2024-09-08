@@ -14,11 +14,10 @@ class Attention(nn.Module):
     def forward(self, query, keys, values):
         if query is None:
             raise ValueError("The hidden state (query) is None, which is required for attention mechanism.")
-        #  query torch.Size([16, 512])  .   values ,keys   torch.Size([16, 237, 1024])
-        query = query.unsqueeze(1)  # (batch_size, 1, hidden_dim)
-        scores = self.Va(torch.tanh(self.Wa(query) + self.Ua(keys)))  # (batch_size, seq_len, 1)
-        attention_weights = F.softmax(scores.squeeze(-1), dim=1)  # (batch_size, seq_len)
-        context = torch.bmm(attention_weights.unsqueeze(1), values)  # (batch_size, 1, hidden_dim)
+        query = query.unsqueeze(1)
+        scores = self.Va(torch.tanh(self.Wa(query) + self.Ua(keys)))
+        attention_weights = F.softmax(scores.squeeze(-1), dim=1)
+        context = torch.bmm(attention_weights.unsqueeze(1), values)
 
         return context, attention_weights
 
@@ -31,6 +30,11 @@ if __name__ == '__main__':
     query = torch.randn(batch_size, hidden_dim)
     keys = torch.randn(batch_size, sequence_length, hidden_dim)
     values = torch.randn(batch_size, sequence_length, hidden_dim)
+    # query.shape torch.Size([16, 1024])
+    # keys.shape torch.Size([16, 199, 1024])
+    # values.shape torch.Size([16, 199, 1024])
+    # context.shape torch.Size([16, 1, 1024])
+    # attention_weights.shape torch.Size([16, 199])
     context, attention_weights = attention(query, keys, values)
     print("Query shape:", query.shape)
     print("Keys shape:", keys.shape)
