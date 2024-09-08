@@ -1,18 +1,25 @@
 import os
+import warnings
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from matplotlib.cbook import pts_to_midstep
 from torch.utils.data import DataLoader
+
+from app.audio.audio_processing import AudioProcess
 from app.models.Tacotron2 import tacotron2
 from app.dataset.common_voice import TextMelDataset, collate_fn
 from app.text_processing.text_cleaner import TextCleaner
 from app.phoneme_preprocessing.phoneme_conversion import Phoneme
+from app.train.mel_data import get_mel_targets
 from common.path_config import model_saving_dir
-import librosa
+
+warnings.simplefilter(action='ignore', category=UserWarning)
 
 def train(model, dataloader, criterion, optimizer, device, batch_size, hidden_dim, num_epochs=10):
     name = str(model.__class__.__name__)
+    audio_processor = AudioProcess()
     model_saving_path = os.path.join(model_saving_dir, name)
     if not os.path.exists(model_saving_path):
         os.makedirs(model_saving_path)
@@ -22,33 +29,19 @@ def train(model, dataloader, criterion, optimizer, device, batch_size, hidden_di
         for i, (wave_paths, phoneme_sequences) in enumerate(dataloader):
             phoneme_sequences = phoneme_sequences.to(device)
             optimizer.zero_grad()
-            mel_output, new_hidden_state, new_cell_state, attention_weights = model(phoneme_sequences, device)
-            mel_targets = get_mel_targets(wave_paths).to(device)
+            # mel_output.shape torch.Size([16, 250, 298])
+            mel_output  = model(phoneme_sequences, device)
+            # torch.Size([16, 250, 250])
+            mel_targets = get_mel_targets(wave_paths, audio_processor, target_length=250,n_mels=250).to(device)
             loss = criterion(mel_output, mel_targets)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
             if i % 10 == 9:
-                print(f'Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(dataloader)}], Loss: {running_loss / 10:.4f}')
+                print(
+                    f'Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(dataloader)}], Loss: {running_loss / 10:.4f}')
                 running_loss = 0.0
-        torch.save(model.state_dict(), f'{model_saving_path}/tacotron2_epoch_{epoch + 1}.pth')
-
-
-
-def get_mel_targets(wave_paths):
-    mel_targets = []
-    for path in wave_paths:
-        mel_spectrogram = load_and_convert_to_mel(path)
-        mel_targets.append(mel_spectrogram)
-    return torch.stack(mel_targets)
-
-
-def load_and_convert_to_mel(wave_path):
-
-    y, sr = librosa.load(wave_path, sr=22050)
-    mel_spectrogram = librosa.feature.melspectrogram(y, sr=sr, n_mels=80)
-    mel_spectrogram = torch.tensor(mel_spectrogram, dtype=torch.float32)
-    return mel_spectrogram
+        torch.save(model.state_dict(), os.path.join(model_saving_path, f'tacotron2_epoch_{epoch + 1}.pth'))
 
 
 if __name__ == '__main__':
@@ -62,7 +55,7 @@ if __name__ == '__main__':
     hidden_dim = 512
     batch_size = 16
     dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4, collate_fn=collate_fn)
-    model = tacotron2.Tacotron2(vocab_size=200, embedding_dim=256, hidden_dim=512, output_dim=80).to(device)
+    model = tacotron2.Tacotron2(vocab_size=200, embedding_dim=256, hidden_dim=512, output_dim=250).to(device)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
     train(model, dataloader, criterion, optimizer, device,batch_size,hidden_dim, num_epochs=50)

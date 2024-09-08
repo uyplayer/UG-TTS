@@ -12,17 +12,11 @@ logger = get_logger(__name__)
 
 
 class AudioProcess(object):
-    _instance = None
 
-    def __new__(cls):
-        logger.info("AudioProcess is initialized")
-        if cls._instance is None:
-            cls._instance = super(AudioProcess, cls).__new__(cls)
-            cls._instance._initialize()
-        return cls._instance
 
-    def _initialize(self):
+    def __init__(self):
         pass
+
 
     def load_audio(self, file_path, sr=None):
         """
@@ -220,43 +214,58 @@ class AudioProcess(object):
         except TypeError as e:
             raise RuntimeError(f"Error in time_stretch: {e}")
 
+    def load_and_convert_to_mel(self, file_path, sr=None, n_mels=80, n_fft=2048, hop_length=512):
+        """
+        从文件中加载音频并转换为 Mel 频谱图。
+        :param file_path: 音频文件的路径
+        :param sr: 目标采样率，如果为 None，则不进行重采样
+        :param n_mels: Mel 频谱的 Mel 帧数
+        :param n_fft: FFT 点数
+        :param hop_length: 窗口滑动步长
+        :return: Mel 频谱图
+        """
+        audio, sample_rate = self.load_audio(file_path, sr)
+        mel_spectrogram = self.extract_mel_spectrogram(audio, sample_rate, n_mels, n_fft, hop_length)
+        return mel_spectrogram
 
 if __name__ == "__main__":
     audio_processor = AudioProcess()
 
-    # 测试音频加载和保存
     file_path = os.path.join(data_dir, "LJ001-0001.wav")
-    audio, sr = audio_processor.load_audio(file_path)
-    print(f"Loaded audio with sample rate {sr}")
+    # audio, sr = audio_processor.load_audio(file_path)
+    # print(f"Loaded audio with sample rate {sr}")
+    #
+    # output_path = os.path.join(data_dir, "output_audio.wav")
+    # audio_processor.save_audio(output_path, audio, sr)
+    # print(f"Saved audio to {output_path}")
+    #
+    # # 测试音频预处理
+    # preprocessed_audio = audio_processor.preprocess_audio(audio, sr, target_sr=16000, noise_reduction=True,
+    #                                                       normalize=True, compression=True, time_stretch=1.2)
+    # print(f"Preprocessed audio with new sample rate: 16000")
+    #
+    # # 测试去除静音
+    # trimmed_audio = audio_processor.trim_silence(preprocessed_audio, sr)
+    # print(f"Trimmed silence from audio")
+    #
+    # # 测试提取 Mel 频谱
+    # mel_spectrogram = audio_processor.extract_mel_spectrogram(trimmed_audio, sr)
+    # print(f"Extracted Mel spectrogram with shape: {mel_spectrogram.shape}")
+    #
+    # # 测试提取 MFCC 特征
+    # mfcc = audio_processor.extract_mfcc(trimmed_audio, sr)
+    # print(f"Extracted MFCC with shape: {mfcc.shape}")
+    #
+    # # 测试数据增强
+    # augmented_audio = audio_processor.apply_data_augmentation(trimmed_audio)
+    # print(f"Applied data augmentation")
+    #
+    # # 测试 Mel 频谱转换回波形
+    # waveform = audio_processor.spectrogram_to_waveform(mel_spectrogram, sr, method='griffinlim')
+    # print(f"Converted Mel spectrogram back to waveform")
+    #
+    # # 验证 Librosa 模块
+    # print(dir(librosa))
 
-    output_path = os.path.join(data_dir, "output_audio.wav")
-    audio_processor.save_audio(output_path, audio, sr)
-    print(f"Saved audio to {output_path}")
-
-    # 测试音频预处理
-    preprocessed_audio = audio_processor.preprocess_audio(audio, sr, target_sr=16000, noise_reduction=True,
-                                                          normalize=True, compression=True, time_stretch=1.2)
-    print(f"Preprocessed audio with new sample rate: 16000")
-
-    # 测试去除静音
-    trimmed_audio = audio_processor.trim_silence(preprocessed_audio, sr)
-    print(f"Trimmed silence from audio")
-
-    # 测试提取 Mel 频谱
-    mel_spectrogram = audio_processor.extract_mel_spectrogram(trimmed_audio, sr)
+    mel_spectrogram = audio_processor.load_and_convert_to_mel(file_path)
     print(f"Extracted Mel spectrogram with shape: {mel_spectrogram.shape}")
-
-    # 测试提取 MFCC 特征
-    mfcc = audio_processor.extract_mfcc(trimmed_audio, sr)
-    print(f"Extracted MFCC with shape: {mfcc.shape}")
-
-    # 测试数据增强
-    augmented_audio = audio_processor.apply_data_augmentation(trimmed_audio)
-    print(f"Applied data augmentation")
-
-    # 测试 Mel 频谱转换回波形
-    waveform = audio_processor.spectrogram_to_waveform(mel_spectrogram, sr, method='griffinlim')
-    print(f"Converted Mel spectrogram back to waveform")
-
-    # 验证 Librosa 模块
-    print(dir(librosa))

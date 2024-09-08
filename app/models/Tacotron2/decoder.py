@@ -1,28 +1,37 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
+
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 class Decoder(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
         super(Decoder, self).__init__()
-        self.rnn = nn.LSTM(input_dim, hidden_dim, batch_first=True)
+        self.rnn = nn.GRU(input_dim, hidden_dim, batch_first=True)
         self.fc = nn.Linear(hidden_dim, output_dim)
-
-    def forward(self, decoder_input, attention_context):
-        rnn_input = torch.cat((decoder_input, attention_context), dim=2)
-        rnn_output, (hidden_state, cell_state) = self.rnn(rnn_input)
+        self.attention_transform = nn.Linear(input_dim, input_dim)
+        self.output_dim = output_dim
+    def forward(self, x, attention_context):
+        attention_context = self.attention_transform(attention_context)
+        rnn_input = x + attention_context
+        rnn_output, _ = self.rnn(rnn_input)
         mel_output = self.fc(rnn_output)
-        return mel_output, hidden_state, cell_state
+        mel_output = mel_output.permute(0, 2, 1)
+        mel_output = self.adjust_output_shape(mel_output)
+        return mel_output
 
-if __name__ == '__main__':
-    batch_size = 16
-    hidden_dim = 512
-    output_dim = 80
+    def adjust_output_shape(self, mel_output):
+        batch_size, output_dim, seq_len = mel_output.size()
+        target_seq_len = self.output_dim
+        if seq_len < target_seq_len:
+            padding_size = target_seq_len - seq_len
+            mel_output = F.pad(mel_output, (0, padding_size), mode='constant', value=0)
+        elif seq_len > target_seq_len:
+            mel_output = mel_output[:, :, :target_seq_len]
+        return mel_output
 
-    decoder = Decoder(input_dim=1024, hidden_dim=512, output_dim=80)
-    context = torch.randn(batch_size, 1, hidden_dim)
-    decoder_input = torch.randn(batch_size, 1, hidden_dim)
 
-    mel_output, new_hidden_state, new_cell_state = decoder(decoder_input, context)
-    print("Mel Output shape:", mel_output.shape)
-    print("New Hidden State shape:", new_hidden_state.shape)
-    print("New Cell State shape:", new_cell_state.shape)
+
