@@ -6,7 +6,7 @@ from config.alphabet import punctuation, character
 from common.log_utils import get_logger
 from config.dictionary import english_dictionary
 from config.special_symbols import money_symbols_mapping, punctuation_mapping
-from app.text_processing.num2str import num2str
+from app.text_processing.num2str0 import num2str
 
 logger = get_logger(__name__)
 

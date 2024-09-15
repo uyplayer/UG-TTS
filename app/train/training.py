@@ -83,8 +83,8 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Paths to the dataset
-    clip_dir = r"E:\MachineLearning\news_data\dev_clips"
-    txt_file_path = r"E:\MachineLearning\news_data\dev.txt"
+    clip_dir = r"E:\MachineLearning\news_data\validated_clips"
+    txt_file_path = r"E:\MachineLearning\news_data\validated.txt"
 
     # Initialize the phoneme processor and text cleaner
     phoneme_processor = Phoneme()
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
     # Model parameters
     hidden_dim = 512
-    batch_size = 32
+    batch_size = 64
     model = tacotron2.Tacotron2(vocab_size=200, embedding_dim=256, hidden_dim=512, output_dim=250).to(device)
 
     # Loss function and optimizer
