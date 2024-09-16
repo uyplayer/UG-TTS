@@ -23,7 +23,14 @@ def num2str(number: float, integer_accepted_length=14) -> str:
     if len(integer_part) > integer_accepted_length:
         integers = split_large_number(integer_part).split(" ")
         for item in integers:
-            integer = integer + " " + integer2str(item)
+            if item.startswith('0'):
+                for sub in item:
+                    if sub == "0":
+                        integer = integer + " " + digits[0]
+                    else:
+                        integer = integer + " " + digits[int(sub)]
+            else:
+                integer = integer + " " + integer2str(item)
     else:
         integer = integer2str(integer_part)
     if dot in number_str:
