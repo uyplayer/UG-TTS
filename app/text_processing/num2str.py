@@ -23,7 +23,7 @@ def num2str(number: float, integer_accepted_length=14) -> str:
     if len(integer_part) > integer_accepted_length:
         integers = split_large_number(integer_part).split(" ")
         for item in integers:
-            integer = integer + integer2str(item)
+            integer = integer + " " + integer2str(item)
     else:
         integer = integer2str(integer_part)
     if dot in number_str:
@@ -82,5 +82,5 @@ def decimal2str(decimal_part: str) -> str:
 
 
 if __name__ == '__main__':
-    print(num2str(1145465))
+    print(num2str(114546500008545))
     print(num2str(1145465.65646))
