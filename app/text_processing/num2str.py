@@ -62,7 +62,7 @@ def convert3digit(number: str) -> str:
         if int(number[1]) != 0:
             result = result + " " + two_units[int(number[1]) - 1]
         if int(number[2]) != 0:
-            result = result + digits[int(number[2])]
+            result = result + " " +  digits[int(number[2])]
     return result.strip()
 
 
